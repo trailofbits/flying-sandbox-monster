@@ -1,0 +1,18 @@
+[package]
+name = "mpclient-rs"
+version = "0.1.0"
+authors = ["yying <andy@trailofbits.com>"]
+
+[dependencies]
+winapi = "0.2"
+kernel32-sys = "0.2"
+field-offset = "0.1.1"
+libc = "0.2.22"
+widestring = "0.2.2"
+clap = "2.24.2"
+log = "0.3.8"
+env_logger = "0.4.3"
+tempdir = "0.3.5"
+serde = "1.0.8"
+serde_derive = "1.0"
+serde_json = "1.0.2"
