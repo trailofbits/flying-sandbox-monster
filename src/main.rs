@@ -1,4 +1,5 @@
 #![allow(non_snake_case)]
+#![allow(non_upper_case_globals)]
 
 extern crate clap;
 extern crate env_logger;
@@ -21,15 +22,14 @@ mod winffi;
 
 use std::env;
 use std::fs;
-use std::mem;
 use std::process;
 use std::path::{Path, PathBuf};
 use std::ptr::null_mut;
-use std::ffi::{OsStr, CStr, CString};
+use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::iter::once;
 
-use clap::{Arg, App, SubCommand, ArgMatches};
+use clap::{Arg, App};
 use winapi::{HANDLE, INVALID_HANDLE_VALUE, INFINITE, FILE_ATTRIBUTE_NORMAL, GENERIC_READ,
              FILE_SHARE_READ, OPEN_EXISTING};
 use winffi::HANDLE_FLAG_INHERIT;
@@ -191,10 +191,6 @@ fn do_worker(raw_values: &str) -> i32 {
         Some((x, y)) => (x, y),
         None => return -1,
     };
-    let path = match env::var(kWorkerPathEnvVar) {
-        Ok(x) => x,
-        Err(_) => return -1,
-    };
 
     let mut mpengine_path = support_path.clone();
     mpengine_path.push("mpengine.dll");
@@ -254,8 +250,7 @@ fn event_loop(profile_name: &str, target_path: &Path) -> i32 {
     info!("child_path = {:?}", child_path);
 
     // XXX: Watch out for the unwrap()
-    let mut profile = match appcontainer::Profile::new(profile_name,
-                                                       child_path.to_str().unwrap()) {
+    let profile = match appcontainer::Profile::new(profile_name, child_path.to_str().unwrap()) {
         Ok(val) => {
             info!("New AppContainer profile created!");
             val
@@ -293,6 +288,7 @@ fn event_loop(profile_name: &str, target_path: &Path) -> i32 {
         return -1;
     }
 
+#[allow(unused_assignments)]
     let mut hFile: HANDLE = INVALID_HANDLE_VALUE;
     let mut hChildRead: HANDLE = INVALID_HANDLE_VALUE;
     let mut hChildWrite: HANDLE = INVALID_HANDLE_VALUE;

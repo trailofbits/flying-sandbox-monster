@@ -1,6 +1,9 @@
 # mpclient-rs
 Sandboxing the Windows Malware Protection service with AppContainers...in Rust.
 
+## Status
+Currently, this does not work within an AppContainer. We are currently investigating the cause.
+
 ## Manual Dependencies
 In order to function, **mpclient-rs** requires some additional dependencies that cannot be automatically included. 
 

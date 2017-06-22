@@ -1,5 +1,7 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
+#![allow(non_camel_case_types)]
+#![allow(dead_code)]
 
 extern crate winapi;
 extern crate kernel32;
@@ -8,14 +10,15 @@ extern crate widestring;
 extern crate serde;
 extern crate serde_json;
 
+#[allow(unused_imports)]
 use log::*;
 use winapi::*;
 
-use self::libc::wcslen;
+#[allow(unused_imports)]
+use std::env;
 
 use std::str;
-use std::env;
-use std::path::{Path, PathBuf};
+use std::path::{PathBuf};
 use std::ffi::{OsStr, CStr, CString};
 use std::os::windows::ffi::OsStrExt;
 use std::iter::once;
@@ -173,6 +176,7 @@ pub enum BootAttr {
     BOOT_ATTR_ISXBAC = 1 << 2,
 }
 
+#[allow(dead_code)]
 pub enum Engine {
     ENGINE_UNPACK = 1 << 1,
     ENGINE_HEURISTICS = 1 << 3,
@@ -183,6 +187,7 @@ pub enum Engine {
     ENGINE_DISABLENETWORKDRIVES = 1 << 20,
 }
 
+#[allow(dead_code)]
 pub enum Scan {
     SCAN_FILENAME = 1 << 8,
     SCAN_ENCRYPTED = 1 << 6,
@@ -197,6 +202,7 @@ pub enum Scan {
     SCAN_UNKNOWN = 1 << 15,
 }
 
+#[allow(dead_code)]
 pub enum StreamAttr {
     STREAM_ATTRIBUTE_INVALID = 0,
     STREAM_ATTRIBUTE_SKIPBMNOTIFICATION = 1,
@@ -268,6 +274,7 @@ pub enum StreamAttr {
     STREAM_ATTRIBUTE_AMSI_REDIRECT_CHAIN = 75,
 }
 
+#[allow(dead_code)]
 pub enum ScanReason {
     SCANREASON_UNKNOWN = 0,
     SCANREASON_ONMOUNT = 1,
@@ -371,6 +378,7 @@ DEF_STRUCT!{struct OPENSCAN_PARAMS {
   field_40: DWORD,
   field_44: DWORD,
 }}
+#[allow(dead_code)]
 pub type POPENSCAN_PARAMS = *mut OPENSCAN_PARAMS;
 
 DEF_STRUCT!{struct SCANSTRUCT {
@@ -446,6 +454,7 @@ pub type rsignalFnType = extern "C" fn(KernelHandle: PHANDLE,
                                        Size: DWORD)
                                        -> DWORD;
 
+#[allow(dead_code)]
 pub struct MpEngine {
     DllModule: HMODULE,
     SignatureLocation: Vec<u16>,
@@ -503,6 +512,7 @@ extern "C" fn doGetSize(this: PVOID, FileSize: PDWORD64) -> DWORD {
     unsafe { kernel32::GetFileSizeEx((*ptr).hRead, FileSize as *mut i64) as DWORD }
 }
 
+#[allow(unused_variables)]
 extern "C" fn doGetName(this: PVOID) -> PWCHAR {
     kStreamName.as_ptr() as PWCHAR
 }
@@ -553,6 +563,7 @@ extern "C" fn doScanCallback(this: PSCANSTRUCT) -> DWORD {
     0
 }
 
+#[allow(unused_variables)]
 unsafe extern "system" fn ExceptionHandler(ExceptionInfo: PEXCEPTION_POINTERS) -> LONG {
     kernel32::TerminateProcess(kernel32::GetCurrentProcess(), 0);
     0
@@ -570,7 +581,7 @@ impl MpEngine {
         support_path.pop();
 
         let fnName = CString::new("__rsignal").unwrap();
-        let mut fnptr = unsafe { kernel32::GetProcAddress(hModule, fnName.as_ptr()) };
+        let fnptr = unsafe { kernel32::GetProcAddress(hModule, fnName.as_ptr()) };
         if fnptr == (0 as LPVOID) {
             return None;
         }
