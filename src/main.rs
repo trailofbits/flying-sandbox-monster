@@ -17,6 +17,7 @@ extern crate log;
 
 mod acl;
 mod appcontainer;
+mod detours;
 mod mpengine;
 mod winffi;
 
