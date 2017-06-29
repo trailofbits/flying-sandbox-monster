@@ -18,12 +18,14 @@ use winapi::*;
 use std::env;
 
 use std::str;
-use std::path::{PathBuf};
+use std::path::PathBuf;
 use std::ffi::{OsStr, CStr, CString};
 use std::os::windows::ffi::OsStrExt;
 use std::iter::once;
 use std::mem;
 use std::ptr::null_mut;
+
+use super::detours::Module;
 
 // Copied from winapi-rs since we are having issues with macro-use
 macro_rules! DEF_STRUCT {
@@ -569,6 +571,13 @@ unsafe extern "system" fn ExceptionHandler(ExceptionInfo: PEXCEPTION_POINTERS) -
     0
 }
 
+extern "system" fn myRtlGetVersion(lpVersionInformation: LPOSVERSIONINFOEXW) -> NTSTATUS {
+    unsafe { (*lpVersionInformation).dwMajorVersion = 5 };
+    unsafe { (*lpVersionInformation).dwMinorVersion = 1 };
+
+    0
+}
+
 impl MpEngine {
     pub fn load(path: &str) -> Option<MpEngine> {
         let dll_path: Vec<u16> = OsStr::new(path).encode_wide().chain(once(0)).collect();
@@ -576,6 +585,19 @@ impl MpEngine {
         if hModule == (0 as HMODULE) {
             return None;
         }
+
+        let target = match Module::target("mpengine.dll") {
+            Some(x) => x,
+            None => return None,
+        };
+
+        // XXX: We need to IAT hook RtlGetVersion so it reports as Windows XP in order to run
+        //      within AppContainer
+        target.intercept("ntdll.dll", "RtlGetVersion", unsafe {
+            mem::transmute::<extern "system" fn(LPOSVERSIONINFOEXW)
+                                                -> NTSTATUS,
+                             LPVOID>(myRtlGetVersion)
+        });
 
         let mut support_path = PathBuf::from(path);
         support_path.pop();
@@ -624,7 +646,7 @@ impl MpEngine {
                           mem::transmute::<PBOOTENGINE_PARAMS, PVOID>(&mut obj.BootParams),
                           mem::size_of::<BOOTENGINE_PARAMS>() as u32)
         };
-        // Returns 0x8001 within AppContainer... why?
+
         if ret != 0 {
             return None;
         }

@@ -143,7 +143,7 @@ fn test_memorywritelock() {
     assert_mem_protect(addr, size, PAGE_READONLY);
 }
 
-struct Module {
+pub struct Module {
     module: HMODULE,
 }
 

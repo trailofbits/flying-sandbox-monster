@@ -159,7 +159,7 @@ impl Profile {
             },
             lpAttributeList: 0 as PPROC_THREAD_ATTRIBUTE_LIST,
         };
-        let mut dwCreationFlags: DWORD = 4 as DWORD;
+        let mut dwCreationFlags: DWORD = 0 as DWORD;
         let mut attrBuf: Vec<u8>;
 
         if !self.debug {
