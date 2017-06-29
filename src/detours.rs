@@ -165,6 +165,7 @@ impl Module {
         Some(library)
     }
 
+    #[allow(dead_code)]
     pub fn self_target() -> Module {
         Module { module: unsafe { kernel32::GetModuleHandleW(null_mut()) } }
     }

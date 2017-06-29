@@ -23,6 +23,7 @@ mod winffi;
 
 use std::env;
 use std::fs;
+use std::mem;
 use std::process;
 use std::path::{Path, PathBuf};
 use std::ptr::null_mut;
@@ -30,9 +31,11 @@ use std::ffi::OsStr;
 use std::os::windows::ffi::OsStrExt;
 use std::iter::once;
 
+use mpengine::Scan;
+
 use clap::{Arg, App};
 use winapi::{HANDLE, INVALID_HANDLE_VALUE, INFINITE, FILE_ATTRIBUTE_NORMAL, GENERIC_READ,
-             FILE_SHARE_READ, OPEN_EXISTING};
+             FILE_SHARE_READ, OPEN_EXISTING, DWORD, LPVOID};
 use winffi::HANDLE_FLAG_INHERIT;
 
 const kWorkerEnvVar: &'static str = "MPCLIENT_RS_WORKER";
@@ -214,8 +217,18 @@ fn do_worker(raw_values: &str) -> i32 {
         return -1;
     }
 
+    let mut bytes_written: DWORD = 0 as DWORD;
+    let null_msg: DWORD = 0 as DWORD;
 
-    // TODO: Send a NULL message to exit?
+    if unsafe {
+           kernel32::WriteFile(hWrite,
+                               mem::transmute::<&DWORD, LPVOID>(&null_msg),
+                               mem::size_of::<DWORD>() as u32,
+                               &mut bytes_written,
+                               null_mut())
+       } == 0 {
+        return -1;
+    }
 
     0
 }
@@ -365,8 +378,44 @@ fn event_loop(profile_name: &str, target_path: &Path) -> i32 {
             }
         };
 
-    println!("{:?}", mpengine::read_scan_response(hChildRead));
-    println!("{:?}", mpengine::read_scan_response(hChildRead));
+    loop {
+        let result = mpengine::read_scan_response(hChildRead);
+        if result.is_none() {
+            debug!("No more responses, exiting loop...");
+            break;
+        }
+
+        let obj = result.unwrap();
+        if (obj.Flags & Scan::SCAN_MEMBERNAME) != 0 {
+            println!("Scanning archive member {:}", obj.VirusName);
+        }
+
+        if (obj.Flags & Scan::SCAN_FILENAME) != 0 {
+            println!("Scanning {:?}", target_path);
+        }
+
+        if (obj.Flags & Scan::SCAN_PACKERSTART) != 0 {
+            println!("Packer {:} identified", obj.VirusName);
+        }
+
+        if (obj.Flags & Scan::SCAN_ENCRYPTED) != 0 {
+            println!("File is encrypted.");
+        }
+
+        if (obj.Flags & Scan::SCAN_CORRUPT) != 0 {
+            println!("File may be corrupt.");
+        }
+
+        if (obj.Flags & Scan::SCAN_FILETYPE) != 0 {
+            println!("File {:} is identitifed as {:}",
+                     obj.FileName,
+                     obj.VirusName);
+        }
+
+        if (obj.Flags & 0x08000022) != 0 {
+            println!("Thread {:} identitied", obj.VirusName);
+        }
+    }
 
     unsafe { kernel32::WaitForSingleObject(process_handle.raw, INFINITE) };
 

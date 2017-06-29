@@ -17,6 +17,7 @@ use winapi::*;
 #[allow(unused_imports)]
 use std::env;
 
+use std::ops;
 use std::str;
 use std::path::PathBuf;
 use std::ffi::{OsStr, CStr, CString};
@@ -294,6 +295,13 @@ pub enum ScanReason {
     SCANREASON_IOAVSTREAM = 0x0F,
 }
 
+impl ops::BitAnd<Scan> for u32 {
+    type Output = u32;
+    fn bitand(self, rhs: Scan) -> u32 {
+        self & (rhs as u32)
+    }
+}
+
 DEF_STRUCT!{struct ENGINE_INFO {
   field_0: DWORD,
   field_4: DWORD,
@@ -445,9 +453,9 @@ DEF_STRUCT!{struct USERPTR_HANDLES {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ScanReplyMsg {
-    Flags: u32,
-    FileName: String,
-    VirusName: String,
+    pub Flags: u32,
+    pub FileName: String,
+    pub VirusName: String,
 }
 
 pub type rsignalFnType = extern "C" fn(KernelHandle: PHANDLE,
@@ -712,6 +720,10 @@ pub fn read_scan_response(hRead: HANDLE) -> Option<ScanReplyMsg> {
     }
 
     if bytes_read != mem::size_of::<DWORD>() as DWORD {
+        return None;
+    }
+
+    if size == 0 {
         return None;
     }
 
