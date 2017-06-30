@@ -1,5 +1,5 @@
 [package]
-name = "mpclient-rs"
+name = "trailofbits-defender"
 version = "0.1.0"
 authors = ["yying <andy@trailofbits.com>"]
 
