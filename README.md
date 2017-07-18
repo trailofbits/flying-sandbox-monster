@@ -1,6 +1,8 @@
 # trailofbits-defender
 A proof-of-concept application that sandboxes the Malware Protection engine within an AppContainer on Windows written in Rust. 
 
+![WannaCry Detection Demo](https://github.com/trailofbits/trailofbits-defender/raw/master/demo.gif)
+
 ## Status
 There is only support for 32-bit builds at this time. Since this is a proof-of-concept that interfaces with an undocumented DLL, there is some trickery performed to make things work.
 
