@@ -17,3 +17,7 @@ In order to function, **trailofbits-defender** requires some additional dependen
  * In `support/`, download `mpam-fe.exe` (the 32-bit antimalware update file) from https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86
  * Extract `mpam-fe.exe` inot `support\` using either `cabextract` or 7Zip.
  * At this point, there should exist a `support\mpengine.dll` amongst other files.
+
+### FAQ
+#### `cargo build` is complaining that `msvc targets depend on msvc linker but "link.exe" was not found`
+You need to at least install [Visual C++ 2015 Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126&fixForIE=.exe)
