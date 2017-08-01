@@ -13,10 +13,9 @@ A proof-of-concept application that sandboxes the Malware Protection engine with
 ### Manual Dependencies
 In order to function, **flying-sandbox-monster** requires some additional dependencies that cannot be automatically included. 
 
- * First, create a directory in the root repository directory called `support/`
- * In `support/`, download `mpam-fe.exe` (the 32-bit antimalware update file) from https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86
- * Extract `mpam-fe.exe` into `support\` using `cabextract` or 7Zip.
- * At this point, `support\mpengine.dll` should exist, among other files.
+ * [Download `mpam-fe.exe`](https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86) (the 32-bit antimalware update file) to the `support\` directory
+ * Extract `mpam-fe.exe` in `support\` using `cabextract` or 7Zip.
+ * Once complete, check that `support\mpengine.dll` exists, among other files.
 
 ### FAQ
 
