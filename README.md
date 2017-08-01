@@ -1,6 +1,6 @@
 # Flying Sandbox Monster
 
-A proof-of-concept application that sandboxes the Malware Protection engine within an AppContainer on Windows written in Rust. There is only support for 32-bit builds at this time. There is some trickery performed to make things work since this is a proof-of-concept that interfaces with an undocumented DLL.
+A proof-of-concept application that sandboxes the Malware Protection engine in an AppContainer on Windows, written in Rust. Flying Sandbox Monster only supports 32-bit builds at this time. Note: there is some _trickery_ performed to make things work since this is a proof-of-concept that interfaces with an undocumented DLL.
 
 ![WannaCry Detection Demo](https://github.com/trailofbits/flying-sandbox-monster/raw/master/demo.gif)
 
@@ -11,7 +11,7 @@ A proof-of-concept application that sandboxes the Malware Protection engine with
  4. Run the unit tests: `cargo test --target i686-pc-windows-msvc`
  
 ### Manual Dependencies
-In order to function, **flying-sandbox-monster** requires some additional dependencies that cannot be automatically included. 
+Flying Sandbox Monster requires dependencies that cannot be automatically included.
 
  * [Download `mpam-fe.exe`](https://go.microsoft.com/fwlink/?LinkID=121721&arch=x86) (the 32-bit antimalware update file) to the `support\` directory
  * Extract `mpam-fe.exe` in `support\` using `cabextract` or 7Zip.
@@ -21,4 +21,4 @@ In order to function, **flying-sandbox-monster** requires some additional depend
 
 #### `cargo build` complains that `msvc targets depend on msvc linker but "link.exe" was not found`
 
-You need to at least install [Visual C++ 2015 Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126&fixForIE=.exe)
+You need to install the [Visual C++ 2015 Build Tools](http://go.microsoft.com/fwlink/?LinkId=691126&fixForIE=.exe) or newer
