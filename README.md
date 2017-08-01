@@ -1,4 +1,5 @@
-# flying-sandbox-monster
+# Flying Sandbox Monster
+
 A proof-of-concept application that sandboxes the Malware Protection engine within an AppContainer on Windows written in Rust. 
 
 ![WannaCry Detection Demo](https://github.com/trailofbits/flying-sandbox-monster/raw/master/demo.gif)
