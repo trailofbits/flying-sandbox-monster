@@ -1,11 +1,8 @@
 # Flying Sandbox Monster
 
-A proof-of-concept application that sandboxes the Malware Protection engine within an AppContainer on Windows written in Rust. 
+A proof-of-concept application that sandboxes the Malware Protection engine within an AppContainer on Windows written in Rust. There is only support for 32-bit builds at this time. There is some trickery performed to make things work since this is a proof-of-concept that interfaces with an undocumented DLL.
 
 ![WannaCry Detection Demo](https://github.com/trailofbits/flying-sandbox-monster/raw/master/demo.gif)
-
-## Status
-There is only support for 32-bit builds at this time. Since this is a proof-of-concept that interfaces with an undocumented DLL, there is some trickery performed to make things work.
 
 ## Development Setup
  1. Clone this repo: `git clone https://github.com/trailofbits/flying-sandbox-monster`
